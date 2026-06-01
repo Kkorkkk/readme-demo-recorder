@@ -1,0 +1,38 @@
+{
+  "name": "readme-demo-recorder",
+  "version": "0.1.0",
+  "description": "Run demo commands and generate README-friendly transcript blocks.",
+  "type": "module",
+  "bin": {
+    "readme-demo-recorder": "./src/index.js"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test"
+  },
+  "keywords": [
+    "cli",
+    "developer-tools",
+    "ai",
+    "github"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "author": "Kkorkkk",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kkorkkk/readme-demo-recorder.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Kkorkkk/readme-demo-recorder/issues"
+  },
+  "homepage": "https://github.com/Kkorkkk/readme-demo-recorder#readme",
+  "files": [
+    "src",
+    "examples",
+    "README.md",
+    "LICENSE"
+  ]
+}

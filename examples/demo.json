@@ -1,0 +1,6 @@
+{
+  "steps": [
+    { "command": "repo-launch-doctor .", "output": "Score: 88/100" },
+    { "command": "npm test", "output": "tests passed" }
+  ]
+}
