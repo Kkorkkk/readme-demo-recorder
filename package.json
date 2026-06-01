@@ -1,7 +1,7 @@
 {
   "name": "readme-demo-recorder",
   "version": "0.1.0",
-  "description": "Run demo commands and generate README-friendly transcript blocks.",
+  "description": "Run or render demo commands and generate README-friendly transcript blocks.",
   "type": "module",
   "bin": {
     "readme-demo-recorder": "./src/index.js"
@@ -13,8 +13,9 @@
   "keywords": [
     "cli",
     "developer-tools",
-    "ai",
-    "github"
+    "readme",
+    "terminal",
+    "documentation"
   ],
   "license": "MIT",
   "engines": {

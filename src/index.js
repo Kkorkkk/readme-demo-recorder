@@ -7,7 +7,15 @@ export function renderTranscript(recipe, run = false) {
   const lines = [fence + "console"];
   for (const step of recipe.steps || []) {
     lines.push(`$ ${step.command}`);
-    const output = run ? execSync(step.command, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }) : (step.output || "");
+    let output = step.output || "";
+    if (run) {
+      try {
+        output = execSync(step.command, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+      } catch (error) {
+        output = `${error.stdout || ""}${error.stderr || ""}`.trimEnd();
+        lines.push(`# exit ${error.status ?? 1}`);
+      }
+    }
     if (output.trim()) lines.push(output.trimEnd());
   }
   lines.push(fence, "");
@@ -25,6 +33,11 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.error("Usage: readme-demo-recorder recipe.json [--run] [--svg]");
     process.exit(1);
   }
-  const transcript = renderTranscript(JSON.parse(readFileSync(file, "utf8")), process.argv.includes("--run"));
-  console.log(process.argv.includes("--svg") ? renderSvg(transcript) : transcript);
+  try {
+    const transcript = renderTranscript(JSON.parse(readFileSync(file, "utf8")), process.argv.includes("--run"));
+    console.log(process.argv.includes("--svg") ? renderSvg(transcript) : transcript);
+  } catch (error) {
+    console.error(`readme-demo-recorder: ${error.message}`);
+    process.exit(2);
+  }
 }

@@ -7,3 +7,8 @@ test("renders markdown and svg transcripts", () => {
   assert.match(md, /console/);
   assert.match(renderSvg(md), /<svg/);
 });
+
+test("records failing command exits instead of throwing", () => {
+  const md = renderTranscript({ steps: [{ command: "node -e 'process.exit(3)'" }] }, true);
+  assert.match(md, /# exit 3/);
+});
