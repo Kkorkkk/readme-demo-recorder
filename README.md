@@ -15,4 +15,4 @@ Without `--run`, expected output in the recipe is rendered. With `--run`, comman
 
 ## Safety
 
-`--run` executes the commands in the recipe. Only use it with recipe files you wrote or trust. Failed commands are recorded with an exit code instead of stopping the whole transcript.
+`--run` executes the commands in the recipe without a shell. Only use it with recipe files you wrote or trust. Failed commands are recorded with an exit code instead of stopping the whole transcript.
