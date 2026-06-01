@@ -11,10 +11,14 @@ test("renders markdown and svg transcripts", () => {
 test("records failing command exits instead of throwing", () => {
   const md = renderTranscript({ steps: [{ command: "node -e 'process.exit(3)'" }] }, true);
   assert.match(md, /# exit 3/);
+  assert.throws(
+    () => renderTranscript({ steps: [{ command: "node -e 'process.exit(3)'" }] }, true, { failOnError: true }),
+    /commands failed/
+  );
 });
 
 test("validates recipe steps and CLI arguments", () => {
   assert.throws(() => renderTranscript({ steps: [{}] }), /command string/);
-  assert.deepEqual(parseCliArgs(["examples/demo.json", "--run"]), { file: "examples/demo.json", run: true, svg: false });
+  assert.deepEqual(parseCliArgs(["examples/demo.json", "--run"]), { file: "examples/demo.json", run: true, failOnError: false, svg: false });
   assert.throws(() => parseCliArgs([]), /Usage:/);
 });

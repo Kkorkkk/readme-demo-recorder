@@ -3,26 +3,30 @@ import { readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
 
-export function renderTranscript(recipe, run = false) {
+export function renderTranscript(recipe, run = false, options = {}) {
   const fence = String.fromCharCode(96, 96, 96);
   const lines = [fence + "console"];
+  let failed = false;
   for (const step of recipe.steps || []) {
     if (!step.command || typeof step.command !== "string") throw new Error("Each step needs a command string.");
     lines.push(`$ ${step.command}`);
     let output = step.output || "";
     if (run) {
       const [cmd, ...args] = splitCommand(step.command);
-      const result = spawnSync(cmd, args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+      const result = spawnSync(cmd, args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 30_000, maxBuffer: 1_000_000 });
       output = `${result.stdout || ""}${result.stderr || ""}`.trimEnd();
       if (result.error) {
         output = result.error.message;
         lines.push("# exit 1");
+        failed = true;
       } else if (result.status !== 0) {
         lines.push(`# exit ${result.status ?? 1}`);
+        failed = true;
       }
     }
     if (output.trim()) lines.push(output.trimEnd());
   }
+  if (failed && options.failOnError) throw new Error("One or more recipe commands failed.");
   lines.push(fence, "");
   return lines.join("\n");
 }
@@ -60,14 +64,14 @@ export function renderSvg(transcript) {
 
 export function parseCliArgs(args) {
   const file = args.find((arg) => !arg.startsWith("--"));
-  if (!file) throw new Error("Usage: readme-demo-recorder recipe.json [--run] [--svg]");
-  return { file, run: args.includes("--run"), svg: args.includes("--svg") };
+  if (!file) throw new Error("Usage: readme-demo-recorder recipe.json [--run] [--fail-on-error] [--svg]");
+  return { file, run: args.includes("--run"), failOnError: args.includes("--fail-on-error"), svg: args.includes("--svg") };
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   try {
-    const { file, run, svg } = parseCliArgs(process.argv.slice(2));
-    const transcript = renderTranscript(JSON.parse(readFileSync(file, "utf8")), run);
+    const { file, run, failOnError, svg } = parseCliArgs(process.argv.slice(2));
+    const transcript = renderTranscript(JSON.parse(readFileSync(file, "utf8")), run, { failOnError });
     console.log(svg ? renderSvg(transcript) : transcript);
   } catch (error) {
     console.error(`readme-demo-recorder: ${error.message}`);
