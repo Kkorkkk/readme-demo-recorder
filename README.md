@@ -2,6 +2,12 @@
 
 [![CI](https://github.com/Kkorkkk/readme-demo-recorder/actions/workflows/ci.yml/badge.svg)](https://github.com/Kkorkkk/readme-demo-recorder/actions/workflows/ci.yml)
 
+## Overview / 项目说明
+
+English: README Demo Recorder renders or runs small command recipes and turns the result into README-ready terminal transcripts. It helps keep demo blocks consistent, reviewable, and easy to regenerate when a CLI changes.
+
+中文：README Demo Recorder 会渲染或执行小型命令配方，并生成适合放进 README 的终端演示片段。它可以让 CLI 项目的演示块更统一、更容易评审，也方便在命令变化后重新生成。
+
 Generate README-ready command transcripts from a small recipe.
 
 ## Install
